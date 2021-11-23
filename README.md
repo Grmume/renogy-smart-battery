@@ -5,7 +5,12 @@ So far I have found two consecutive address regions for which the battery return
 0x1388 - 0x13a9 and
 0x13ab - 0x13bc
 
-I'm still in the process if figuring out which register contains which value.
+I'm still in the process of figuring out which register contains which value.
+
+### Pinout
+Both RJ45 jacks are connected to the same RS485 lines on the PCB, so it does not matter which jack is used to connect to the battery.
+The UP port also has lines for the activation button which is connected to lines 3 and 4 and allows putting the battery into shelf mode.
+![pinout](https://github.com/Grmume/renogy-smart-battery/blob/main/UP_Pinout.png)
 
 ### Commandline options
 --device: Which serial device to use for the RS485 communication
