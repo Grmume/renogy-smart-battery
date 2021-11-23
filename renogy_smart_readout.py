@@ -14,11 +14,11 @@ import time
 
 REGISTERS = {
     # START - Slave returns unknown data address below here
-    'test001':{                  'address':0x1388, 'length':2, 'type':'uint16'},
-    'test002':{                  'address':0x1389, 'length':2, 'type':'uint16'},
-    'test003':{                  'address':0x138a, 'length':2, 'type':'uint16'},
-    'test004':{                  'address':0x138b, 'length':2, 'type':'uint16'},
-    'test20':{                   'address':0x138c, 'length':2, 'type':'uint16'},
+    'cell_count':{               'address':0x1388, 'length':2, 'type':'uint16'},
+    'cellvoltage_1':{            'address':0x1389, 'length':2, 'type':'uint16'},
+    'cellvoltage_2':{            'address':0x138a, 'length':2, 'type':'uint16'},
+    'cellvoltage_3':{            'address':0x138b, 'length':2, 'type':'uint16'},
+    'cellvoltage_4':{            'address':0x138c, 'length':2, 'type':'uint16'},
     'test21':{                   'address':0x138d, 'length':2, 'type':'uint16'},
     'test22':{                   'address':0x138e, 'length':2, 'type':'uint16'},
     'test23':{                   'address':0x138f, 'length':2, 'type':'uint16'},
