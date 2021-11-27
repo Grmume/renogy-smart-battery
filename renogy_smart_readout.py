@@ -14,75 +14,106 @@ import time
 
 REGISTERS = {
     # START - Slave returns unknown data address below here
-    'cell_count':{               'address':0x1388, 'length':2, 'type':'uint16'},
-    'cellvoltage_1':{            'address':0x1389, 'length':2, 'type':'uint16'},
-    'cellvoltage_2':{            'address':0x138a, 'length':2, 'type':'uint16'},
-    'cellvoltage_3':{            'address':0x138b, 'length':2, 'type':'uint16'},
-    'cellvoltage_4':{            'address':0x138c, 'length':2, 'type':'uint16'},
-    'test21':{                   'address':0x138d, 'length':2, 'type':'uint16'},
-    'test22':{                   'address':0x138e, 'length':2, 'type':'uint16'},
-    'test23':{                   'address':0x138f, 'length':2, 'type':'uint16'},
-    'test24':{                   'address':0x1390, 'length':2, 'type':'uint16'},
-    'test25':{                   'address':0x1391, 'length':2, 'type':'uint16'},
-    'test26':{                   'address':0x1392, 'length':2, 'type':'uint16'},
-    'test27':{                   'address':0x1393, 'length':2, 'type':'uint16'},
-    'test28':{                   'address':0x1394, 'length':2, 'type':'uint16'},
-    'test29':{                   'address':0x1395, 'length':2, 'type':'uint16'},
-    'test30':{                   'address':0x1396, 'length':2, 'type':'uint16'},
-    'test31':{                   'address':0x1397, 'length':2, 'type':'uint16'},
-    'test32':{                   'address':0x1398, 'length':2, 'type':'uint16'},
-    'test33':{                   'address':0x1399, 'length':2, 'type':'uint16'},
-    'test34':{                   'address':0x139a, 'length':2, 'type':'uint16'},
-    'test35':{                   'address':0x139b, 'length':2, 'type':'uint16'},
-    'test36':{                   'address':0x139c, 'length':2, 'type':'uint16'},
-    'test50':{                   'address':0x139d, 'length':2, 'type':'uint16'},
-    'test51':{                   'address':0x139e, 'length':2, 'type':'uint16'},
-    'test52':{                   'address':0x139f, 'length':2, 'type':'uint16'},
-    'test53':{                   'address':0x13a0, 'length':2, 'type':'uint16'},
-    'test54':{                   'address':0x13a1, 'length':2, 'type':'uint16'},
-    'test55':{                   'address':0x13a2, 'length':2, 'type':'uint16'},
-    'test99':{                   'address':0x13a3, 'length':2, 'type':'uint16'},
-    'test98':{                   'address':0x13a4, 'length':2, 'type':'uint16'},
-    'test97':{                   'address':0x13a5, 'length':2, 'type':'uint16'},
-    'test96':{                   'address':0x13a6, 'length':2, 'type':'uint16'},
-    'test01':{                   'address':0x13a7, 'length':2, 'type':'uint16'},
-    'test02':{                   'address':0x13a8, 'length':2, 'type':'uint16'},
-    'test03':{                   'address':0x13a9, 'length':2, 'type':'uint16'},
+    'cell_count':{               'address':0x1388, 'length':1, 'type':'uint', 'scaling':'identical',      'unit':''},
+    'cellvoltage_1':{            'address':0x1389, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0)',  'unit':'V'},
+    'cellvoltage_2':{            'address':0x138a, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0)',  'unit':'V'},
+    'cellvoltage_3':{            'address':0x138b, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0)',  'unit':'V'},
+    'cellvoltage_4':{            'address':0x138c, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0)',  'unit':'V'},
+    'test21':{                   'address':0x138d, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test22':{                   'address':0x138e, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test23':{                   'address':0x138f, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test24':{                   'address':0x1390, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test25':{                   'address':0x1391, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test26':{                   'address':0x1392, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test27':{                   'address':0x1393, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test28':{                   'address':0x1394, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test29':{                   'address':0x1395, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test30':{                   'address':0x1396, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test31':{                   'address':0x1397, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test32':{                   'address':0x1398, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test33':{                   'address':0x1399, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test34':{                   'address':0x139a, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test35':{                   'address':0x139b, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test36':{                   'address':0x139c, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test50':{                   'address':0x139d, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test51':{                   'address':0x139e, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test52':{                   'address':0x139f, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test53':{                   'address':0x13a0, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test54':{                   'address':0x13a1, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test55':{                   'address':0x13a2, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test99':{                   'address':0x13a3, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test98':{                   'address':0x13a4, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test97':{                   'address':0x13a5, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test96':{                   'address':0x13a6, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test01':{                   'address':0x13a7, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test02':{                   'address':0x13a8, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test03':{                   'address':0x13a9, 'length':1, 'type':'uint', 'scaling':'identical'},
 
-    'test05':{                   'address':0x13ab, 'length':2, 'type':'uint16'},
-    'test06':{                   'address':0x13ac, 'length':2, 'type':'uint16'},
-    'test07':{                   'address':0x13ad, 'length':2, 'type':'uint16'},
-    'test08':{                   'address':0x13ae, 'length':2, 'type':'uint16'},
-    'test09':{                   'address':0x13af, 'length':2, 'type':'uint16'},
-    'test10':{                   'address':0x13b0, 'length':2, 'type':'uint16'},
-    'test11':{                   'address':0x13b1, 'length':2, 'type':'uint16'},
-    'current':{                  'address':0x13b2, 'length':2, 'type':'uint16'},
-    'voltage':{                  'address':0x13b3, 'length':2, 'type':'uint16'},
-    'test88':{                   'address':0x13b4, 'length':2, 'type':'uint16'},
-    'test12':{                   'address':0x13b5, 'length':2, 'type':'uint16'},
-    'test99':{                   'address':0x13b6, 'length':2, 'type':'uint16'},
-    'test13':{                   'address':0x13b7, 'length':2, 'type':'uint16'},
-    'test14':{                   'address':0x13b8, 'length':2, 'type':'uint16'},
-    'test15':{                   'address':0x13b9, 'length':2, 'type':'uint16'},
-    'test16':{                   'address':0x13ba, 'length':2, 'type':'uint16'},
-    'test17':{                   'address':0x13bb, 'length':2, 'type':'uint16'},
-    'test18':{                   'address':0x13bc, 'length':2, 'type':'uint16'}
+    'test05':{                   'address':0x13ab, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test06':{                   'address':0x13ac, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test07':{                   'address':0x13ad, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test08':{                   'address':0x13ae, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test09':{                   'address':0x13af, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test10':{                   'address':0x13b0, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test11':{                   'address':0x13b1, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'current':{                  'address':0x13b2, 'length':1, 'type':'sint', 'scaling':'linear(0.1,0)', 'unit': 'A'},
+    'voltage':{                  'address':0x13b3, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0)',  'unit':'V'},
+    'remaining_charge':{         'address':0x13b4, 'length':2, 'type':'uint', 'scaling':'linear(0.001,0)','unit':'Ah'},
+    'capacity':{                 'address':0x13b6, 'length':2, 'type':'uint', 'scaling':'linear(0.001,0)','unit':'Ah'},
+    'test13':{                   'address':0x13b7, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test14':{                   'address':0x13b8, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test15':{                   'address':0x13b9, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test16':{                   'address':0x13ba, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test17':{                   'address':0x13bb, 'length':1, 'type':'uint', 'scaling':'identical'},
+    'test18':{                   'address':0x13bc, 'length':1, 'type':'uint', 'scaling':'identical'}
     # END - Slave returns unknown address from here onward
 }
 
+def linear(factor, offset, input):
+    return (input*factor)+offset
+
 def read_register(instrument, reg: dict):
-    if reg['type'] == 'string':
-        return instrument.read_string(reg['address'], reg['length'])
-    elif reg['type'] == 'uint16':
-        return instrument.read_register(reg['address'])
-    elif reg['type'] == 'uint32':
-        return instrument.read_long(reg['address'])
+    raw_data = instrument.read_registers(reg['address'], reg['length'])
+    value = 0
+    
+    # Calculate RAW Value
+    if reg['type'] == 'sint':
+        # Check if sign bit is set
+        if raw_data[0] > 32768:
+            negative = True
+        else:
+            negative = False
+
+        value = 0
+        for shift in range(0, reg['length']):
+            shift_amount = (reg['length'] - shift - 1)*16
+            value = value | (raw_data[shift] << shift_amount)
+
+        if negative:
+            value = value - 32768
+
+    elif reg['type'] == 'uint':
+        value = 0
+        for shift in range(0, reg['length']):
+            shift_amount = (reg['length'] - shift - 1)*16
+            value = value | (raw_data[shift] << shift_amount)
+
     else:
         print(f'Warning: Unsupported register type {reg["type"]}.')
         return None
+    
+    # Apply scaling
+    if reg['scaling']=='identical':
+        return value
+    else:
+        # Add paramter for the input value
+        head, _sep, tail = partitioned = reg['scaling'].rpartition(')')
+        fnc_call = head+', value)'
+        scaled = eval(fnc_call)
+        return scaled
 
 def scan_addresses(instrument):
-    TEST_REGISTER = {'address':0x13b3, 'length':2, 'type':'uint16'}
+    TEST_REGISTER = {'address':0x13b3, 'length':1, 'type':'uint', 'scaling':'identical'}
     instrument.serial.timeout = 0.1
     for address in range(247, 248):
         instrument.address = address
@@ -143,20 +174,20 @@ def print_values_loop(instrument):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Renogy Smart Battery RS485 readout.')
     parser.add_argument('--device', default='/dev/ttyUSB0', help='Serial device to use for RS485 communication')
-    parser.add_argument('--address', default=0x7f, type=lambda x: int(x,0), help='Slave address of the RS485 device')
+    parser.add_argument('--address', default=0xf7, type=lambda x: int(x,0), help='Slave address of the RS485 device')
     parser.add_argument('--scan-addresses', default=False, help='Determine slave address by brute force.', action='store_true')
     parser.add_argument('--list-devices', default=False, help='List serial devices', action='store_true')
     args = parser.parse_args()
 
     if args.list_devices:
-        print('device'.ljust(25)+'manufacturer'.ljust(25)+'product'.ljust(25)+'description')
+        print('device'.ljust(20)+'manufacturer'.ljust(25)+'product'.ljust(25)+'description')
         print('---------------------------------------------------------------------------------------')
         for port in serial.tools.list_ports.comports():
             dev = port.device or 'n/a'
             manf = port.manufacturer or 'n/a'
             prod = port.product or 'n/a'
             desc = port.description or 'n/a'
-            print(dev.ljust(25)+manf.ljust(25)+prod.ljust(25)+desc)
+            print(dev.ljust(20)+manf.ljust(25)+prod.ljust(25)+desc)
     else:
         # 247 (0xf7) is the default address. If the another renogy device is connected it might have reprogrammed the address to another value.
         instrument = minimalmodbus.Instrument(args.device, slaveaddress=247)
