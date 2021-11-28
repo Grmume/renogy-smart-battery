@@ -15,23 +15,18 @@ import json
 
 REGISTERS = {
     'cell_count':{               'address':0x1388, 'length':1, 'type':'uint', 'scaling':'identical',      'unit':''},
-    'celltemp_1':{               'address':0x139a, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0,-1)',  'unit': '°c'},
-    'celltemp_2':{               'address':0x139b, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0,-1)',  'unit': '°c'},
-    'celltemp_3':{               'address':0x139c, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0,-1)',  'unit': '°c'},
-    'celltemp_4':{               'address':0x139d, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0,-1)',  'unit': '°c'},
     'cellvoltage_1':{            'address':0x1389, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0,-1)',  'unit':'V'},
     'cellvoltage_2':{            'address':0x138a, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0,-1)',  'unit':'V'},
     'cellvoltage_3':{            'address':0x138b, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0,-1)',  'unit':'V'},
     'cellvoltage_4':{            'address':0x138c, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0,-1)',  'unit':'V'},
-    'current':{                  'address':0x13b2, 'length':1, 'type':'sint', 'scaling':'linear(0.1,0,-1)', 'unit': 'A'},
-    'charge_capacity':{          'address':0x13b6, 'length':2, 'type':'uint', 'scaling':'linear(0.001,0,-1)','unit':'Ah'},
-    'remaining_charge':{         'address':0x13b4, 'length':2, 'type':'uint', 'scaling':'linear(0.001,0,2)','unit':'Ah'},
-    'voltage':{                  'address':0x13b3, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0,2)',  'unit':'V'},
-
     'unknown_0x138d':{           'address':0x138d, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x138e':{           'address':0x138e, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x138f':{           'address':0x138f, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x1390':{           'address':0x1390, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'celltemp_1':{               'address':0x139a, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0,-1)',  'unit': '°c'},
+    'celltemp_2':{               'address':0x139b, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0,-1)',  'unit': '°c'},
+    'celltemp_3':{               'address':0x139c, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0,-1)',  'unit': '°c'},
+    'celltemp_4':{               'address':0x139d, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0,-1)',  'unit': '°c'},
     'unknown_0x1391':{           'address':0x1391, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x1392':{           'address':0x1392, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x1393':{           'address':0x1393, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
@@ -60,13 +55,82 @@ REGISTERS = {
     'unknown_0x13af':{           'address':0x13af, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x13b0':{           'address':0x13b0, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x13b1':{           'address':0x13b1, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'current':{                  'address':0x13b2, 'length':1, 'type':'sint', 'scaling':'linear(0.1,0,2)', 'unit': 'A'},
+    'voltage':{                  'address':0x13b3, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0,2)',  'unit':'V'},
+    'remaining_charge':{         'address':0x13b4, 'length':2, 'type':'uint', 'scaling':'linear(0.001,0,2)','unit':'Ah'},
+    'charge_capacity':{          'address':0x13b6, 'length':2, 'type':'uint', 'scaling':'linear(0.001,0,-1)','unit':'Ah'},
     'unknown_0x13b7':{           'address':0x13b7, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x13b8':{           'address':0x13b8, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x13b9':{           'address':0x13b9, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x13ba':{           'address':0x13ba, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x13bb':{           'address':0x13bb, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
-    'unknown_0x13bc':{           'address':0x13bc, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''}
-    # END - Slave returns unknown address from here onward
+    'unknown_0x13bc':{           'address':0x13bc, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x13ec':{           'address':0x13ec, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x13ed':{           'address':0x13ed, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x13ee':{           'address':0x13ee, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x13ef':{           'address':0x13ef, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x13f0':{           'address':0x13f0, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x13f1':{           'address':0x13f1, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x13f2':{           'address':0x13f2, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x13f3':{           'address':0x13f3, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x13f4':{           'address':0x13f4, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x13f5':{           'address':0x13f5, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x13f6':{           'address':0x13f6, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x13f7':{           'address':0x13f7, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x13f8':{           'address':0x13f8, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x13f9':{           'address':0x13f9, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x13fa':{           'address':0x13fa, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x13fb':{           'address':0x13fb, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x13fc':{           'address':0x13fc, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x13fd':{           'address':0x13fd, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x13fe':{           'address':0x13fe, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x13ff':{           'address':0x13ff, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1400':{           'address':0x1400, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1401':{           'address':0x1401, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1402':{           'address':0x1402, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1403':{           'address':0x1403, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1404':{           'address':0x1404, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1405':{           'address':0x1405, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1406':{           'address':0x1406, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1407':{           'address':0x1407, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1408':{           'address':0x1408, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1409':{           'address':0x1409, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x140a':{           'address':0x140a, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x140b':{           'address':0x140b, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x140c':{           'address':0x140c, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x140d':{           'address':0x140d, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x140e':{           'address':0x140e, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x140f':{           'address':0x140f, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1410':{           'address':0x1410, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1411':{           'address':0x1411, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1412':{           'address':0x1412, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1413':{           'address':0x1413, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1414':{           'address':0x1414, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1415':{           'address':0x1415, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1450':{           'address':0x1450, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1451':{           'address':0x1451, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1452':{           'address':0x1452, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1453':{           'address':0x1453, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1454':{           'address':0x1454, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1455':{           'address':0x1455, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1456':{           'address':0x1456, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1457':{           'address':0x1457, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1458':{           'address':0x1458, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1459':{           'address':0x1459, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x145a':{           'address':0x145a, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x145b':{           'address':0x145b, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x145c':{           'address':0x145c, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x145d':{           'address':0x145d, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x145e':{           'address':0x145e, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x145f':{           'address':0x145f, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1460':{           'address':0x1460, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1461':{           'address':0x1461, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1462':{           'address':0x1462, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1463':{           'address':0x1463, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1464':{           'address':0x1464, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1465':{           'address':0x1465, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1466':{           'address':0x1466, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'unknown_0x1467':{           'address':0x1467, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
 }
 
 def linear(factor, offset, precision, input):
@@ -128,6 +192,21 @@ def scan_addresses(instrument):
     
     return None
 
+def scan_registers(instrument):
+    usableregs = {}
+    for address in range(0x1dbb, 0xFFFF):
+    # for address in range(0xcc1, 0xFFFF):
+        print(f"register {hex(address)}... ", end=" ")
+        try:
+            val = read_register(instrument, {'address': address, 'length': 1, 'type':'uint', 'scaling':'identical'})
+
+            print(f"good! {val}")
+            usableregs[address]=val
+            exit
+        except:
+            print(f"nope")
+            pass
+    print(json.dumps(usableregs, indent=4))
 
 def read_registers(instrument):
     global REGISTERS
@@ -190,6 +269,7 @@ if __name__ == "__main__":
     parser.add_argument('--device', default='/dev/ttyUSB0', help='Serial device to use for RS485 communication')
     parser.add_argument('--address', default=0xf7, type=lambda x: int(x,0), help='Slave address of the RS485 device')
     parser.add_argument('--scan-addresses', default=False, help='Determine slave address by brute force.', action='store_true')
+    parser.add_argument('--scan-registers', default=False, help='', action='store_true')
     parser.add_argument('--list-devices', default=False, help='List serial devices', action='store_true')
     parser.add_argument('--format', default='dump', help='[dump,jsonl]')
     parser.add_argument('--once', default=False, action='store_true')
@@ -224,6 +304,11 @@ if __name__ == "__main__":
         if slave_address != None:
             instrument.address = slave_address
             instrument.serial.timeout = 0.2
+
+            if args.scan_registers:
+                scan_registers(instrument)
+                exit
+
             print_values_loop(instrument, args.format, args.once)
 
 
