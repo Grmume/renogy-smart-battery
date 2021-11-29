@@ -194,7 +194,7 @@ def scan_addresses(instrument):
 
 def scan_registers(instrument):
     usableregs = {}
-    for address in range(0x1dbb, 0xFFFF):
+    for address in range(0xe7f0, 0xFFFF):
     # for address in range(0xcc1, 0xFFFF):
         print(f"register {hex(address)}... ", end=" ")
         try:
@@ -202,7 +202,6 @@ def scan_registers(instrument):
 
             print(f"good! {val}")
             usableregs[address]=val
-            exit
         except:
             print(f"nope")
             pass
