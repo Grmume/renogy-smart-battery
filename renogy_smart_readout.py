@@ -14,11 +14,11 @@ import json
 
 
 REGISTERS = {
-    'cell_count':{               'address':0x1388, 'length':1, 'type':'uint', 'scaling':'identical',      'unit':''},
-    'cellvoltage_1':{            'address':0x1389, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0,-1)',  'unit':'V'},
-    'cellvoltage_2':{            'address':0x138a, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0,-1)',  'unit':'V'},
-    'cellvoltage_3':{            'address':0x138b, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0,-1)',  'unit':'V'},
-    'cellvoltage_4':{            'address':0x138c, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0,-1)',  'unit':'V'},
+    'cell_count':{               'address':0x1388, 'length':1, 'type':'uint', 'scaling':'identical',      'unit':'cells'},
+    'cellvoltage_1':{            'address':0x1389, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0,2)',  'unit':'V'},
+    'cellvoltage_2':{            'address':0x138a, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0,2)',  'unit':'V'},
+    'cellvoltage_3':{            'address':0x138b, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0,2)',  'unit':'V'},
+    'cellvoltage_4':{            'address':0x138c, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0,2)',  'unit':'V'},
     'unknown_0x138d':{           'address':0x138d, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x138e':{           'address':0x138e, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x138f':{           'address':0x138f, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
@@ -61,8 +61,8 @@ REGISTERS = {
     'charge_capacity':{          'address':0x13b6, 'length':2, 'type':'uint', 'scaling':'linear(0.001,0,-1)','unit':'Ah'},
     'unknown_0x13b7':{           'address':0x13b7, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x13b8':{           'address':0x13b8, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
-    'unknown_0x13b9':{           'address':0x13b9, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
-    'unknown_0x13ba':{           'address':0x13ba, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'maximum_voltage?':{           'address':0x13b9, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0,1)', 'unit': 'V'},
+    'minimum_voltage?':{           'address':0x13ba, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0,1)', 'unit': 'V'},
     'unknown_0x13bb':{           'address':0x13bb, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x13bc':{           'address':0x13bc, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x13ec':{           'address':0x13ec, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
@@ -130,7 +130,7 @@ REGISTERS = {
     'unknown_0x1464':{           'address':0x1464, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x1465':{           'address':0x1465, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x1466':{           'address':0x1466, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
-    'unknown_0x1467':{           'address':0x1467, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'device_address?':{           'address':0x1467, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
 }
 
 def linear(factor, offset, precision, input):
@@ -194,8 +194,7 @@ def scan_addresses(instrument):
 
 def scan_registers(instrument):
     usableregs = {}
-    for address in range(0xe7f0, 0xFFFF):
-    # for address in range(0xcc1, 0xFFFF):
+    for address in range(0x0000, 0xFFFF):
         print(f"register {hex(address)}... ", end=" ")
         try:
             val = read_register(instrument, {'address': address, 'length': 1, 'type':'uint', 'scaling':'identical'})
@@ -226,30 +225,19 @@ def print_values_loop(instrument, format, once):
         values = read_registers(instrument)
 
         if format == "dump":
-            # print(f'''{GOBACK}
-            #         SOC:                {values['soc_aux']}
-            #         Temps:              {values['temp_pcb_cells']}
-            #         Charge State:       {values['charge_state']}
-            #         Error Codes:        {values['error_codes']}
-            #         Aux. Voltage:       {values['voltage_aux']}
-            #         Max Charge:         {values['max_charge']}
-            #         Alt. Voltage:       {values['voltage_alt']}
-            #         Alt. Current:       {values['current_alt']}
-            #         Alt. Watts:         {values['power_alt']}
-            #         Solar Voltage:      {values['voltage_solar']}
-            #         Solar Current:      {values['current_solar']}
-            #         Daily Voltage Low:  {values['voltage_daily_low']}
-            #         Daily Voltage High: {values['voltage_daily_high']}
-            #         Daily Current High: {values['current_daily_high']}
-            #         Daily Power High:   {values['power_daily_high']}
-            #         Daily gen. Power:   {values['power_daily_acc']}
-            #         Capacity charged:   {values['charged_capacity_acc']}
-            #         Tot. running days:  {values['total_running_days']}''')
-            print('')
-            print('Register'.ljust(25)+'Address'.ljust(10)+'Value'.ljust(10))
-            print('---------------------------------------------------------------------')
-            for val in values:
-                print(val.ljust(25)+"{0:#0{1}x}".format(REGISTERS[val]['address'],6).ljust(10), str(values[val]).ljust(10)+f" {REGISTERS[val]['unit']}")
+            print('Register'.ljust(25)+'Address'.ljust(10)+'Value'.ljust(10)+'Decimal'.ljust(10)+'Binary'.ljust(21))
+            print('-'*25 + '-'*10 + '-'*10 + '-'*10 + '-'*21)
+            for key in values:
+                value = f"{str(values[key])} {REGISTERS[key]['unit']}" if REGISTERS[key]['unit'] != "" else "{0:#0{1}x}".format(values[key],6)
+
+                keyP = key.ljust(25)
+                addressP = "{0:#0{1}x}".format(REGISTERS[key]['address'],6).ljust(10)
+                valueP = value.ljust(10)
+                decP = str(values[key] if REGISTERS[key]['unit'] == '' else '').ljust(10)
+                binP = ("{0:#0{1}b}".format(values[key],18) if REGISTERS[key]['unit'] == '' else '').ljust(21)
+
+                print(f"{keyP}{addressP}{valueP}{decP}{binP}")
+                # print(key.ljust(25)+"{0:#0{1}x}".format(REGISTERS[key]['address'],6).ljust(10), value.ljust(10)+f" {REGISTERS[key]['unit']}")
 
             time.sleep(1)
 
@@ -306,8 +294,7 @@ if __name__ == "__main__":
 
             if args.scan_registers:
                 scan_registers(instrument)
-                exit
-
-            print_values_loop(instrument, args.format, args.once)
+            else:
+                print_values_loop(instrument, args.format, args.once)
 
 
