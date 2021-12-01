@@ -123,7 +123,7 @@ def linear(factor, offset, precision, input):
         return round(linear(factor, offset, -1, input), precision)
 
 def ascii(_nothing, input):
-    return binascii.unhexlify(hex(input).replace("0x", "").encode()).decode()
+    return binascii.unhexlify(hex(input).replace("0x", "").encode()).decode().replace("\u0000", "")
 
 def read_register(instrument, reg: dict):
     raw_data = instrument.read_registers(reg['address'], reg['length'])
@@ -171,64 +171,22 @@ def read_register_or_false(instrument, reg):
     except:
         return False
 
-def scan_addresses(instrument):
-    instrument.serial.timeout = 0.1
-    for address in range(1, 248):
-        instrument.address = address
-        print(f"checking address: {hex(address)}... ", end="")
-        try:
-            val = read_register(instrument, {'address':0x1467, 'length':1, 'type':'uint', 'scaling':'identical'})
-            if val == address:
-                print(f"battery")
-            else:
-                print(f"somethingelse:{hex(val)}")
-        except:
-            print("nope")
-            pass
 
-def find_devices(instrument):
+def find_batteries(instrument):
     instrument.serial.timeout = 0.1
-    for address in range(0x29, 0x61):
+    for address in range(0x0000, 0x00F8):
         print(f"checking device address: {hex(address)}... ", end="")
-        
-        instrument.address = address
-        val = read_register_or_false(instrument, {'address':0x000C, 'length':8, 'type':'uint', 'scaling':'identical'})
         try:
-            if val == False:
-                pass
-            elif ascii(0,val).strip() == "RBC50D1S-G1":
-                print("RBC50D1S-G1")
-                continue
+            instrument.address = address
+
+            model_number = read_register_or_false(instrument, {'address':0x1402, 'length':8, 'type':'uint', 'scaling':'identical'})
+            if (model_number != False):
+                serial = read_register_or_false(instrument, {'address':0x13f6, 'length':8, 'type':'uint', 'scaling':'identical'})
+                print(f"model: {ascii(0,model_number)}, serial: {ascii(0,serial)}")
+            else:
+                print("unknown")
         except:
-            pass
-
-        val = read_register_or_false(instrument, {'address':0x1402, 'length':8, 'type':'uint', 'scaling':'identical'})
-        try:
-            if val == False:
-                pass
-            elif hex(val) == "0x5242543130304c46503132532d473100":
-                print("RBT100LFP12S-G1, serial: ", end='')
-                val = read_register_or_false(instrument, {'address':0x13f6, 'length':8, 'type':'uint', 'scaling':'identical'})
-                print(ascii(0,val))
-                continue
-        except:
-            pass
-
-        print("")
-
-def scan_registers(instrument):
-    usableregs = {}
-    for address in range(0x0000, 0xFFFF):
-        print(f"register {hex(address)}... ", end=" ")
-        try:
-            val = read_register(instrument, {'address': address, 'length': 1, 'type':'uint', 'scaling':'identical'})
-
-            print(f"good! {val}")
-            usableregs[address]=val
-        except:
-            print(f"nope")
-            pass
-    print(json.dumps(usableregs, indent=4))
+            print("bad response, skipping")
 
 def read_registers(instrument):
     global REGISTERS
@@ -240,83 +198,71 @@ def read_registers(instrument):
             print(f'Error: Exception reading register {reg}: {inst}.')    
     return values
 
-def print_values_loop(instrument, format, once):
+def dump_table(instrument):
     global REGISTERS
-    LINE_COUNT = 19
-    GOBACK = "\033[F" * LINE_COUNT
+    values = read_registers(instrument)
 
-    while(True):
-        values = read_registers(instrument)
+    print('Register'.ljust(25)+'Address'.ljust(10)+'Value'.ljust(10)+'Decimal'.ljust(10)+'Binary'.ljust(21))
+    print('-'*25 + '-'*10 + '-'*10 + '-'*10 + '-'*21)
+    for key in values:
+        keyP = key.ljust(25)
+        addressP = "{0:#0{1}x}".format(REGISTERS[key]['address'],6).ljust(10)
 
-        if format == "dump":
-            print('Register'.ljust(25)+'Address'.ljust(10)+'Value'.ljust(10)+'Decimal'.ljust(10)+'Binary'.ljust(21))
-            print('-'*25 + '-'*10 + '-'*10 + '-'*10 + '-'*21)
-            for key in values:
-                keyP = key.ljust(25)
-                addressP = "{0:#0{1}x}".format(REGISTERS[key]['address'],6).ljust(10)
-
-                if isinstance(values[key], str):
-                    print(f"{keyP}{addressP}\"{values[key]}\"")
-                else:
-                    value = f"{str(values[key])} {REGISTERS[key]['unit']}" if REGISTERS[key]['unit'] != "" else "{0:#0{1}x}".format(values[key],6)
-                    valueP = value.ljust(10)
-                    decP = str(values[key] if REGISTERS[key]['unit'] == '' else '').ljust(10)
-                    binP = ("{0:#0{1}b}".format(values[key],18) if REGISTERS[key]['unit'] == '' else '').ljust(21)
-
-                    print(f"{keyP}{addressP}{valueP}{decP}{binP}")
-
-            time.sleep(1)
-
-        elif format == "jsonl":
-            print(json.dumps(values))
-        
+        if isinstance(values[key], str):
+            print(f"{keyP}{addressP}\"{values[key]}\"")
         else:
-            print(f"bad format: {format}")
+            value = f"{str(values[key])} {REGISTERS[key]['unit']}" if REGISTERS[key]['unit'] != "" else "{0:#0{1}x}".format(values[key],6)
+            valueP = value.ljust(10)
+            decP = str(values[key] if REGISTERS[key]['unit'] == '' else '').ljust(10)
+            binP = ("{0:#0{1}b}".format(values[key],18) if REGISTERS[key]['unit'] == '' else '').ljust(21)
 
-        if once:
-            break
+            print(f"{keyP}{addressP}{valueP}{decP}{binP}")
+
+def dump_json(instrument):
+    global REGISTERS
+    values = read_registers(instrument)
+    print(json.dumps(values, indent=4, sort_keys=True))
+
+def dump_jsonl(instrument):
+    global REGISTERS
+    values = read_registers(instrument)
+    print(json.dumps(values))
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Renogy Smart Battery RS485 readout.')
     parser.add_argument('--device', default='/dev/ttyUSB0', help='Serial device to use for RS485 communication')
+    parser.add_argument('--find', default=False, action='store_true')
     parser.add_argument('--address', default=0xf7, type=lambda x: int(x,0), help='Slave address of the RS485 device')
-    parser.add_argument('--scan-addresses', default=False, help='Determine slave address by brute force.', action='store_true')
-    parser.add_argument('--scan-registers', default=False, help='', action='store_true')
-    parser.add_argument('--list-devices', default=False, help='List serial devices', action='store_true')
-    parser.add_argument('--format', default='dump', help='[dump,jsonl]')
-    parser.add_argument('--once', default=False, action='store_true')
-    parser.add_argument('--find-devices', default=False, action='store_true')
+    parser.add_argument('--dump', default=False )
+    parser.add_argument('--interval', default=False, type=lambda x: int(x,0))
     args = parser.parse_args()
 
-    if args.list_devices:
-        print('device'.ljust(20)+'manufacturer'.ljust(25)+'product'.ljust(25)+'description')
-        print('---------------------------------------------------------------------------------------')
-        for port in serial.tools.list_ports.comports():
-            dev = port.device or 'n/a'
-            manf = port.manufacturer or 'n/a'
-            prod = port.product or 'n/a'
-            desc = port.description or 'n/a'
-            print(dev.ljust(20)+manf.ljust(25)+prod.ljust(25)+desc)
+    # 247 (0xf7) is the default address. If the another renogy device is connected it might have reprogrammed the address to another value.
+    instrument = minimalmodbus.Instrument(args.device, slaveaddress=247)
+    instrument.serial.baudrate = 9600
+    instrument.serial.timeout = 0.2
+
+    if args.find:
+        find_batteries(instrument)
     else:
-        # 247 (0xf7) is the default address. If the another renogy device is connected it might have reprogrammed the address to another value.
-        instrument = minimalmodbus.Instrument(args.device, slaveaddress=247)
-        instrument.serial.baudrate = 9600
+        instrument.address = args.address
         instrument.serial.timeout = 0.2
 
-        if args.scan_addresses:
-            print('Scanning addresses...')
-            scan_addresses(instrument)
-        elif args.find_devices:
-            print("finding devices...")
-            find_devices(instrument)
-        else:
-            instrument.address = args.address
-            instrument.serial.timeout = 0.2
+        while True:
+            if args.dump == "table":
+                dump_table(instrument)
+                print("")
+                print("")
+            if args.dump == "json":
+                dump_json(instrument)
+                print("")
+                print("")
+            if args.dump == "jsonl":
+                dump_jsonl(instrument)
 
-            if args.scan_registers:
-                scan_registers(instrument)
+            if args.interval == False:
+                break
             else:
-                print_values_loop(instrument, args.format, args.once)
-
+                time.sleep(args.interval)
 
