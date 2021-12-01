@@ -69,7 +69,7 @@ REGISTERS = {
     'unknown_0x13ec':{           'address':0x13ec, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x13ed':{           'address':0x13ed, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x13ee':{           'address':0x13ee, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
-    'unknown_0x13ef':{           'address':0x13ef, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'heater_level':{             'address':0x13ef, 'length':1, 'type':'uint', 'scaling':'linear(1,0,0)', 'unit': '%'},
     'unknown_0x13f0':{           'address':0x13f0, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x13f1':{           'address':0x13f1, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x13f2':{           'address':0x13f2, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
