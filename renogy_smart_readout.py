@@ -11,6 +11,7 @@ import serial.tools.list_ports
 import argparse
 import time
 import json
+import binascii
 
 
 REGISTERS = {
@@ -75,32 +76,17 @@ REGISTERS = {
     'unknown_0x13f3':{           'address':0x13f3, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x13f4':{           'address':0x13f4, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x13f5':{           'address':0x13f5, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
-    'unknown_0x13f6':{           'address':0x13f6, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
-    'unknown_0x13f7':{           'address':0x13f7, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
-    'unknown_0x13f8':{           'address':0x13f8, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
-    'unknown_0x13f9':{           'address':0x13f9, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
-    'unknown_0x13fa':{           'address':0x13fa, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
-    'unknown_0x13fb':{           'address':0x13fb, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
-    'unknown_0x13fc':{           'address':0x13fc, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
-    'unknown_0x13fd':{           'address':0x13fd, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'serial':{                   'address':0x13f6, 'length':8, 'type':'uint', 'scaling':'ascii(0)',  'unit': ''},
     'unknown_0x13fe':{           'address':0x13fe, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x13ff':{           'address':0x13ff, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x1400':{           'address':0x1400, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x1401':{           'address':0x1401, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
-    'unknown_0x1402':{           'address':0x1402, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
-    'unknown_0x1403':{           'address':0x1403, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
-    'unknown_0x1404':{           'address':0x1404, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
-    'unknown_0x1405':{           'address':0x1405, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
-    'unknown_0x1406':{           'address':0x1406, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
-    'unknown_0x1407':{           'address':0x1407, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'model':{                    'address':0x1402, 'length':6, 'type':'uint', 'scaling':'ascii(0)', 'unit': ''},
     'unknown_0x1408':{           'address':0x1408, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x1409':{           'address':0x1409, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x140a':{           'address':0x140a, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x140b':{           'address':0x140b, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
-    'unknown_0x140c':{           'address':0x140c, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
-    'unknown_0x140d':{           'address':0x140d, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
-    'unknown_0x140e':{           'address':0x140e, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
-    'unknown_0x140f':{           'address':0x140f, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'manufacturer':{             'address':0x140c, 'length':4, 'type':'uint', 'scaling':'ascii(0)', 'unit': ''},
     'unknown_0x1410':{           'address':0x1410, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x1411':{           'address':0x1411, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x1412':{           'address':0x1412, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
@@ -130,7 +116,7 @@ REGISTERS = {
     'unknown_0x1464':{           'address':0x1464, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x1465':{           'address':0x1465, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x1466':{           'address':0x1466, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
-    'device_address?':{           'address':0x1467, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
+    'device_address_echo':{      'address':0x1467, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
 }
 
 def linear(factor, offset, precision, input):
@@ -138,6 +124,9 @@ def linear(factor, offset, precision, input):
         return (input*factor)+offset
     else:
         return round(linear(factor, offset, -1, input), precision)
+
+def ascii(_nothing, input):
+    return binascii.unhexlify(hex(input).replace("0x", "").encode()).decode()
 
 def read_register(instrument, reg: dict):
     raw_data = instrument.read_registers(reg['address'], reg['length'])
@@ -179,18 +168,48 @@ def read_register(instrument, reg: dict):
         scaled = eval(fnc_call)
         return scaled
 
+def read_register_or_false(instrument, reg):
+    try:
+        return read_register(instrument, reg)
+    except:
+        return False
+
 def scan_addresses(instrument):
-    TEST_REGISTER = {'address':0x13b3, 'length':1, 'type':'uint', 'scaling':'identical'}
     instrument.serial.timeout = 0.1
-    for address in range(247, 248):
+    for address in range(1, 248):
         instrument.address = address
+        print(f"checking address: {hex(address)}... ", end="")
         try:
-            read_register(instrument, TEST_REGISTER)
-            return address
+            val = read_register(instrument, {'address':0x1467, 'length':1, 'type':'uint', 'scaling':'identical'})
+            if val == address:
+                print(f"battery")
+            else:
+                print(f"somethingelse:{hex(val)}")
         except:
-            pass           
-    
-    return None
+            print("nope")
+            pass
+
+def find_devices(instrument):
+    instrument.serial.timeout = 0.1
+    for address in range(0, 248):
+        print(f"checking device address: {hex(address)}... ", end="")
+        
+        instrument.address = address
+
+        val = read_register_or_false(instrument, {'address':0x00C, 'length':8, 'type':'uint', 'scaling':'identical'})
+
+        if val == False:
+            print(f"no response")
+            continue
+            
+        try:
+            if binascii.unhexlify(hex(val).replace("0x", "").encode()).decode().strip() == "RBC50D1S-G1":
+                print(f"RBC50D1S-G1 ")
+                continue
+        except:
+            pass
+
+        print(hex(val))
 
 def scan_registers(instrument):
     usableregs = {}
@@ -228,16 +247,18 @@ def print_values_loop(instrument, format, once):
             print('Register'.ljust(25)+'Address'.ljust(10)+'Value'.ljust(10)+'Decimal'.ljust(10)+'Binary'.ljust(21))
             print('-'*25 + '-'*10 + '-'*10 + '-'*10 + '-'*21)
             for key in values:
-                value = f"{str(values[key])} {REGISTERS[key]['unit']}" if REGISTERS[key]['unit'] != "" else "{0:#0{1}x}".format(values[key],6)
-
                 keyP = key.ljust(25)
                 addressP = "{0:#0{1}x}".format(REGISTERS[key]['address'],6).ljust(10)
-                valueP = value.ljust(10)
-                decP = str(values[key] if REGISTERS[key]['unit'] == '' else '').ljust(10)
-                binP = ("{0:#0{1}b}".format(values[key],18) if REGISTERS[key]['unit'] == '' else '').ljust(21)
 
-                print(f"{keyP}{addressP}{valueP}{decP}{binP}")
-                # print(key.ljust(25)+"{0:#0{1}x}".format(REGISTERS[key]['address'],6).ljust(10), value.ljust(10)+f" {REGISTERS[key]['unit']}")
+                if isinstance(values[key], str):
+                    print(f"{keyP}{addressP}\"{values[key]}\"")
+                else:
+                    value = f"{str(values[key])} {REGISTERS[key]['unit']}" if REGISTERS[key]['unit'] != "" else "{0:#0{1}x}".format(values[key],6)
+                    valueP = value.ljust(10)
+                    decP = str(values[key] if REGISTERS[key]['unit'] == '' else '').ljust(10)
+                    binP = ("{0:#0{1}b}".format(values[key],18) if REGISTERS[key]['unit'] == '' else '').ljust(21)
+
+                    print(f"{keyP}{addressP}{valueP}{decP}{binP}")
 
             time.sleep(1)
 
@@ -279,17 +300,9 @@ if __name__ == "__main__":
 
         if args.scan_addresses:
             print('Scanning addresses...')
-            slave_address = scan_addresses(instrument)
-
-            if(slave_address != None):
-                print(f'Slave address: {hex(slave_address)}')
-            else:
-                print('Error: could not determine slave address.')
+            scan_addresses(instrument)
         else:
-            slave_address = args.address
-
-        if slave_address != None:
-            instrument.address = slave_address
+            instrument.address = args.address
             instrument.serial.timeout = 0.2
 
             if args.scan_registers:
