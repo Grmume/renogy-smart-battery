@@ -188,25 +188,33 @@ def scan_addresses(instrument):
 
 def find_devices(instrument):
     instrument.serial.timeout = 0.1
-    for address in range(0, 248):
+    for address in range(0x29, 0x61):
         print(f"checking device address: {hex(address)}... ", end="")
         
         instrument.address = address
-
-        val = read_register_or_false(instrument, {'address':0x00C, 'length':8, 'type':'uint', 'scaling':'identical'})
-
-        if val == False:
-            print(f"no response")
-            continue
-            
+        val = read_register_or_false(instrument, {'address':0x000C, 'length':8, 'type':'uint', 'scaling':'identical'})
         try:
-            if binascii.unhexlify(hex(val).replace("0x", "").encode()).decode().strip() == "RBC50D1S-G1":
-                print(f"RBC50D1S-G1 ")
+            if val == False:
+                pass
+            elif ascii(0,val).strip() == "RBC50D1S-G1":
+                print("RBC50D1S-G1")
                 continue
         except:
             pass
 
-        print(hex(val))
+        val = read_register_or_false(instrument, {'address':0x1402, 'length':8, 'type':'uint', 'scaling':'identical'})
+        try:
+            if val == False:
+                pass
+            elif hex(val) == "0x5242543130304c46503132532d473100":
+                print("RBT100LFP12S-G1, serial: ", end='')
+                val = read_register_or_false(instrument, {'address':0x13f6, 'length':8, 'type':'uint', 'scaling':'identical'})
+                print(ascii(0,val))
+                continue
+        except:
+            pass
+
+        print("")
 
 def scan_registers(instrument):
     usableregs = {}
@@ -278,6 +286,7 @@ if __name__ == "__main__":
     parser.add_argument('--list-devices', default=False, help='List serial devices', action='store_true')
     parser.add_argument('--format', default='dump', help='[dump,jsonl]')
     parser.add_argument('--once', default=False, action='store_true')
+    parser.add_argument('--find-devices', default=False, action='store_true')
     args = parser.parse_args()
 
     if args.list_devices:
@@ -298,6 +307,9 @@ if __name__ == "__main__":
         if args.scan_addresses:
             print('Scanning addresses...')
             scan_addresses(instrument)
+        elif args.find_devices:
+            print("finding devices...")
+            find_devices(instrument)
         else:
             instrument.address = args.address
             instrument.serial.timeout = 0.2
