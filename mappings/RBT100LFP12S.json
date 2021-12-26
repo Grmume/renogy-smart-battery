@@ -1,0 +1,417 @@
+{
+  "baud_rate": 9600,
+  "read_mappings": {
+    "0x1388": {
+      "description": "Number of discrete cells in the battery",
+      "name": "cell_count",
+      "type": "uint",
+      "unit": "cells",
+      "word_count": 1
+    },
+    "0x1389": {
+      "name": "cell_01_voltage",
+      "scale_factor": 0.1,
+      "type": "ufloat",
+      "unit": "V",
+      "word_count": 1
+    },
+    "0x138a": {
+      "name": "cell_02_voltage",
+      "scale_factor": 0.1,
+      "type": "ufloat",
+      "unit": "V",
+      "word_count": 1
+    },
+    "0x138b": {
+      "name": "cell03_voltage",
+      "scale_factor": 0.1,
+      "type": "ufloat",
+      "unit": "V",
+      "word_count": 1
+    },
+    "0x138c": {
+      "name": "cell_04_voltage",
+      "scale_factor": 0.1,
+      "type": "ufloat",
+      "unit": "V",
+      "word_count": 1
+    },
+    "0x138d": {
+      "word_count": 1
+    },
+    "0x138e": {
+      "word_count": 1
+    },
+    "0x138f": {
+      "word_count": 1
+    },
+    "0x1390": {
+      "word_count": 1
+    },
+    "0x1391": {
+      "word_count": 1
+    },
+    "0x1392": {
+      "word_count": 1
+    },
+    "0x1393": {
+      "word_count": 1
+    },
+    "0x1394": {
+      "word_count": 1
+    },
+    "0x1395": {
+      "word_count": 1
+    },
+    "0x1396": {
+      "word_count": 1
+    },
+    "0x1397": {
+      "word_count": 1
+    },
+    "0x1398": {
+      "word_count": 1
+    },
+    "0x1399": {
+      "word_count": 1
+    },
+    "0x139a": {
+      "length": 1,
+      "name": "cell_01_temperature",
+      "scale_factor": 0.1,
+      "type": "ufloat",
+      "unit": "°c"
+    },
+    "0x139b": {
+      "name": "cell_02_temperature",
+      "scale_factor": 0.1,
+      "type": "ufloat",
+      "unit": "°c",
+      "word_count": 1
+    },
+    "0x139c": {
+      "name": "cell_03_temperature",
+      "scale_factor": 0.1,
+      "type": "ufloat",
+      "unit": "°c",
+      "word_count": 1
+    },
+    "0x139d": {
+      "name": "cell_04_temperature",
+      "scale_factor": 0.1,
+      "type": "ufloat",
+      "unit": "°c",
+      "word_count": 1
+    },
+    "0x139e": {
+      "word_count": 1
+    },
+    "0x139f": {
+      "word_count": 1
+    },
+    "0x13a0": {
+      "word_count": 1
+    },
+    "0x13a1": {
+      "word_count": 1
+    },
+    "0x13a2": {
+      "word_count": 1
+    },
+    "0x13a3": {
+      "word_count": 1
+    },
+    "0x13a4": {
+      "word_count": 1
+    },
+    "0x13a5": {
+      "word_count": 1
+    },
+    "0x13a6": {
+      "word_count": 1
+    },
+    "0x13a7": {
+      "word_count": 1
+    },
+    "0x13a8": {
+      "word_count": 1
+    },
+    "0x13a9": {
+      "word_count": 1
+    },
+    "0x13ab": {
+      "word_count": 1
+    },
+    "0x13ac": {
+      "word_count": 1
+    },
+    "0x13ad": {
+      "word_count": 1
+    },
+    "0x13ae": {
+      "word_count": 1
+    },
+    "0x13af": {
+      "word_count": 1
+    },
+    "0x13b0": {
+      "word_count": 1
+    },
+    "0x13b1": {
+      "word_count": 1
+    },
+    "0x13b2": {
+      "name": "amperage",
+      "scale_factor": 0.1,
+      "type": "sfloat",
+      "unit": "A",
+      "word_count": 1
+    },
+    "0x13b3": {
+      "name": "voltage",
+      "scale_factor": 0.1,
+      "type": "ufloat",
+      "unit": "V",
+      "word_count": 1
+    },
+    "0x13b4": {
+      "name": "charge_remaining",
+      "scale_factor": 0.001,
+      "type": "sfloat",
+      "unit": "Ah",
+      "word_count": 2
+    },
+    "0x13b6": {
+      "name": "charge_capacity",
+      "scale_factor": 0.001,
+      "type": "sfloat",
+      "unit": "Ah",
+      "word_count": 2
+    },
+    "0x13b7": {
+      "word_count": 1
+    },
+    "0x13b8": {
+      "word_count": 1
+    },
+    "0x13b9": {
+      "name": "high_voltage_protection",
+      "scale_factor": 0.1,
+      "type": "ufloat",
+      "unit": "V",
+      "word_count": 1
+    },
+    "0x13ba": {
+      "name": "low_voltage_protection",
+      "scale_factor": 0.1,
+      "type": "ufloat",
+      "unit": "V",
+      "word_count": 1
+    },
+    "0x13bb": {
+      "name": "current_limit_charge",
+      "scaling_factor": 0.01,
+      "type": "ufloat",
+      "word_count": 1
+    },
+    "0x13bc": {
+      "name": "current_limit_discharge",
+      "scaling_factor": 0.01,
+      "type": "ufloat",
+      "word_count": 1
+    },
+    "0x13ec": {
+      "word_count": 1
+    },
+    "0x13ed": {
+      "word_count": 1
+    },
+    "0x13ee": {
+      "word_count": 1
+    },
+    "0x13ef": {
+      "confident": false,
+      "name": "heater_level",
+      "type": "uint",
+      "word_count": 1
+    },
+    "0x13f0": {
+      "word_count": 1
+    },
+    "0x13f1": {
+      "word_count": 1
+    },
+    "0x13f2": {
+      "word_count": 1
+    },
+    "0x13f3": {
+      "word_count": 1
+    },
+    "0x13f4": {
+      "word_count": 1
+    },
+    "0x13f5": {
+      "word_count": 1
+    },
+    "0x13f6": {
+      "name": "serial_number",
+      "type": "ascii",
+      "word_length": 8
+    },
+    "0x13fe": {
+      "word_count": 1
+    },
+    "0x13ff": {
+      "word_count": 1
+    },
+    "0x1400": {
+      "word_count": 1
+    },
+    "0x1401": {
+      "word_count": 1
+    },
+    "0x1402": {
+      "name": "model_name",
+      "type": "ascii",
+      "word_length": 8
+    },
+    "0x140a": {
+      "name": "firmware_version",
+      "type": "ascii",
+      "word_length": 2
+    },
+    "0x140c": {
+      "name": "manufacturer",
+      "type": "ascii",
+      "word_length": 4
+    },
+    "0x1410": {
+      "word_count": 1
+    },
+    "0x1411": {
+      "word_count": 1
+    },
+    "0x1412": {
+      "word_count": 1
+    },
+    "0x1413": {
+      "word_count": 1
+    },
+    "0x1414": {
+      "word_count": 1
+    },
+    "0x1415": {
+      "word_count": 1
+    },
+    "0x1450": {
+      "name": "high_voltage_cell_protection",
+      "scaling_factor": 0.1,
+      "type": "ufloat",
+      "unit": "v",
+      "word_count": 1
+    },
+    "0x1451": {
+      "name": "high_voltage_cell_warning",
+      "scaling_factor": 0.1,
+      "type": "ufloat",
+      "unit": "v",
+      "word_count": 1
+    },
+    "0x1452": {
+      "name": "low_voltage_cell_warning",
+      "scaling_factor": 0.1,
+      "type": "ufloat",
+      "unit": "v",
+      "word_count": 1
+    },
+    "0x1453": {
+      "name": "low_voltage_cell_protection",
+      "scaling_factor": 0.1,
+      "type": "ufloat",
+      "unit": "v",
+      "word_count": 1
+    },
+    "0x1454": {
+      "name": "high_temperature_charge_protection",
+      "scaling_factor": 0.1,
+      "type": "sfloat",
+      "unit": "°c",
+      "word_count": 1
+    },
+    "0x1455": {
+      "name": "high_temperature_charge_warning",
+      "scaling_factor": 0.1,
+      "type": "sfloat",
+      "unit": "°c",
+      "word_count": 1
+    },
+    "0x1456": {
+      "name": "low_temperature_charge_warning",
+      "scaling_factor": 0.1,
+      "type": "sfloat",
+      "unit": "°c",
+      "word_count": 1
+    },
+    "0x1457": {
+      "name": "low_temperature_charge_protection",
+      "scaling_factor": 0.1,
+      "type": "sfloat",
+      "unit": "°c",
+      "word_count": 1
+    },
+    "0x1458": {
+      "name": "over_current_charge_protection",
+      "scaling_factor": 0.01,
+      "type": "sfloat",
+      "unit": "°c",
+      "word_count": 1
+    },
+    "0x1459": {
+      "word_count": 1
+    },
+    "0x145a": {
+      "word_count": 1
+    },
+    "0x145b": {
+      "word_count": 1
+    },
+    "0x145c": {
+      "word_count": 1
+    },
+    "0x145d": {
+      "word_count": 1
+    },
+    "0x145e": {
+      "word_count": 1
+    },
+    "0x145f": {
+      "word_count": 1
+    },
+    "0x1460": {
+      "word_count": 1
+    },
+    "0x1461": {
+      "word_count": 1
+    },
+    "0x1462": {
+      "word_count": 1
+    },
+    "0x1463": {
+      "word_count": 1
+    },
+    "0x1464": {
+      "word_count": 1
+    },
+    "0x1465": {
+      "word_count": 1
+    },
+    "0x1466": {
+      "word_count": 1
+    },
+    "0x1467": {
+      "name": "device_address",
+      "type": "uint",
+      "word_count": 1
+    }
+  }
+}

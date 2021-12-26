@@ -20,6 +20,7 @@ REGISTERS = {
     'cellvoltage_2':{            'address':0x138a, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0,2)',  'unit':'V'},
     'cellvoltage_3':{            'address':0x138b, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0,2)',  'unit':'V'},
     'cellvoltage_4':{            'address':0x138c, 'length':1, 'type':'uint', 'scaling':'linear(0.1,0,2)',  'unit':'V'},
+    
     'unknown_0x138d':{           'address':0x138d, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x138e':{           'address':0x138e, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
     'unknown_0x138f':{           'address':0x138f, 'length':1, 'type':'uint', 'scaling':'identical', 'unit': ''},
