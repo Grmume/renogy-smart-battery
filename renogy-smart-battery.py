@@ -139,6 +139,12 @@ def linear(factor, offset, input):
 
 def read_register(instrument, reg: dict):
     raw_data = instrument.read_registers(reg['address'], reg['length'])
+    raw_bytes = []
+    idx = 0
+    for uint16 in raw_data:
+        raw_bytes.append(uint16 >> 8)
+        raw_bytes.append(uint16 & 0x00ff)
+        idx = idx + 2
     value = 0
     
     # Calculate raw value
@@ -167,20 +173,23 @@ def read_register(instrument, reg: dict):
         for reg in raw_data:
             string = string+chr(reg >> 8)
             string = string+chr(reg & 0xff)
-        return string
+        # If the string does not match the register length exactly it will contain a termination character (0x00)
+        # Truncate the string if required:
+        string = string.split("\x00")[0]
+        return {'value':string, 'raw_bytes': raw_bytes}
     else:
         print(f'Warning: Unsupported register type {reg["type"]}.')
         return None
     
     # Apply scaling
     if reg['scaling']=='identical':
-        return value
+        return {'value':value, 'raw_bytes': raw_bytes}
     else:
         # Add paramter for the input value
         head, _sep, tail = partitioned = reg['scaling'].rpartition(')')
         fnc_call = head+', value)'
         scaled = eval(fnc_call)
-        return scaled
+        return {'value':scaled, 'raw_bytes': raw_bytes}
 
 def scan_addresses(instrument):
     TEST_REGISTER = {'address':0x13b3, 'length':1, 'type':'uint',   'scaling':'identical'}
@@ -207,37 +216,24 @@ def read_registers(instrument):
 
 def print_values_loop(instrument):
     global REGISTERS
-    LINE_COUNT = 19
-    GOBACK = "\033[F" * LINE_COUNT
 
     while(True):
         values = read_registers(instrument)
-
-        # print(f'''{GOBACK}
-        #         SOC:                {values['soc_aux']}
-        #         Temps:              {values['temp_pcb_cells']}
-        #         Charge State:       {values['charge_state']}
-        #         Error Codes:        {values['error_codes']}
-        #         Aux. Voltage:       {values['voltage_aux']}
-        #         Max Charge:         {values['max_charge']}
-        #         Alt. Voltage:       {values['voltage_alt']}
-        #         Alt. Current:       {values['current_alt']}
-        #         Alt. Watts:         {values['power_alt']}
-        #         Solar Voltage:      {values['voltage_solar']}
-        #         Solar Current:      {values['current_solar']}
-        #         Daily Voltage Low:  {values['voltage_daily_low']}
-        #         Daily Voltage High: {values['voltage_daily_high']}
-        #         Daily Current High: {values['current_daily_high']}
-        #         Daily Power High:   {values['power_daily_high']}
-        #         Daily gen. Power:   {values['power_daily_acc']}
-        #         Capacity charged:   {values['charged_capacity_acc']}
-        #         Tot. running days:  {values['total_running_days']}''')
         print('')
-        print('Register'.ljust(25)+'Address'.ljust(10)+'Value'.ljust(10))
-        print('---------------------------------------------------------------------')
-        for val in values:
-            print(val.ljust(25)+"{0:#0{1}x}".format(REGISTERS[val]['address'],6).ljust(10), str(values[val]).ljust(10))
-
+        print('Register'.ljust(25)+'Address'.ljust(10)+'Value'.ljust(20).ljust(10)+'Binary'.ljust(35))
+        print('----------------------------------------------------------------------------------------------')
+        for key in values:
+            register_name = key.ljust(25)
+            address_string = "{0:#0{1}x}".format(REGISTERS[key]['address'],6).ljust(10)
+            if isinstance(values[key]['value'], float):
+                value_number_string = "{:.2f}".format(values[key]['value'])
+            else:
+                value_number_string = str(values[key]['value'])
+            value_string = (value_number_string+' '+REGISTERS[key]['unit']).ljust(20)
+            binary_string = (' '.join(format(byte, '08b') for byte in values[key]['raw_bytes'])).ljust(35)
+            if len(binary_string) > 35:
+                binary_string = binary_string[:32]+'...'
+            print(register_name+address_string+value_string+binary_string)
         time.sleep(1)
 
 if __name__ == "__main__":
@@ -258,7 +254,7 @@ if __name__ == "__main__":
             desc = port.description or 'n/a'
             print(dev.ljust(20)+manf.ljust(25)+prod.ljust(25)+desc)
     else:
-        # 247 (0xf7) is the default address. If the another renogy device is connected it might have reprogrammed the address to another value.
+        # 247 (0xf7) is the default address. If another renogy device is connected it might have reprogrammed the address to another value.
         instrument = minimalmodbus.Instrument(args.device, slaveaddress=247)
         instrument.serial.baudrate = 9600
         instrument.serial.timeout = 0.2
