@@ -61,7 +61,7 @@ REGISTERS = {
     'unknown_0x13af':{           'address':0x13af, 'length':1, 'type':'uint',   'scaling':'identical',        'unit': ''},
     'unknown_0x13b0':{           'address':0x13b0, 'length':1, 'type':'uint',   'scaling':'identical',        'unit': ''},
     'unknown_0x13b1':{           'address':0x13b1, 'length':1, 'type':'uint',   'scaling':'identical',        'unit': ''},
-    'current':{                  'address':0x13b2, 'length':1, 'type':'sint',   'scaling':'linear(0.1,0)',    'unit': 'A'},
+    'current':{                  'address':0x13b2, 'length':1, 'type':'sint',   'scaling':'linear(0.01,0)',   'unit': 'A'},
     'voltage':{                  'address':0x13b3, 'length':1, 'type':'uint',   'scaling':'linear(0.1,0)',    'unit':'V'},
     'remaining_charge':{         'address':0x13b4, 'length':2, 'type':'uint',   'scaling':'linear(0.001,0)',  'unit':'Ah'},
     'capacity':{                 'address':0x13b6, 'length':2, 'type':'uint',   'scaling':'linear(0.001,0)',  'unit':'Ah'},
