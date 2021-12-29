@@ -5,6 +5,7 @@ This script features:
   - Readout of register data
 
 The intention is to use it as a starting point to figure out the meaning of the register data of the renogy LIFEPO smart batteries.
+The global dictionary contains a complete list of all registers that the batteries respond to (although the meaning of many registers is still unknown)
 '''
 import minimalmodbus
 import serial.tools.list_ports
@@ -135,9 +136,21 @@ REGISTERS = {
 }
 
 def linear(factor, offset, input):
+    '''
+    Linear conversion method. 
+    Used to convert fixed point integers to physical values.
+    '''
     return (input*factor)+offset
 
 def read_register(instrument, reg: dict):
+    '''
+    Read a single register (can be more than 2 bytes).
+    Reads the raw data from one or multiple consecutive registers
+    and converts the raw data to physical values (if required).
+    Return a dictionary with the following keys:
+        * value: Physical value or string
+        * raw_bytes: List containing the register data (one byte per list entry)
+    '''
     raw_data = instrument.read_registers(reg['address'], reg['length'])
     raw_bytes = []
     idx = 0
@@ -192,6 +205,11 @@ def read_register(instrument, reg: dict):
         return {'value':scaled, 'raw_bytes': raw_bytes}
 
 def scan_addresses(instrument):
+    '''
+    Scan slave address.
+    Iterates through all RS485 addresses and checks whether the register 0x13b3 can be read from any of them.
+    If an address is found it is returned, returns None otherwise.
+    '''
     TEST_REGISTER = {'address':0x13b3, 'length':1, 'type':'uint',   'scaling':'identical'}
     instrument.serial.timeout = 0.1
     for address in range(0x01, 0xf8):
@@ -205,6 +223,11 @@ def scan_addresses(instrument):
     return None
 
 def read_registers(instrument):
+    '''
+    Read all registers from the slave.
+    Iterates through all registers defined in the global variables
+    and parses the returned data.
+    '''
     global REGISTERS
     values = {}
     for reg in REGISTERS:
@@ -215,6 +238,10 @@ def read_registers(instrument):
     return values
 
 def print_values_loop(instrument):
+    '''
+    Read all register data and present them in a human readable form.
+    Data is updated every 1s and printed to console in a table.
+    '''
     global REGISTERS
 
     while(True):
@@ -226,7 +253,7 @@ def print_values_loop(instrument):
             register_name = key.ljust(25)
             address_string = "{0:#0{1}x}".format(REGISTERS[key]['address'],6).ljust(10)
             if isinstance(values[key]['value'], float):
-                value_number_string = "{:.2f}".format(values[key]['value'])
+                value_number_string = '{:.2f}'.format(values[key]['value'])
             else:
                 value_number_string = str(values[key]['value'])
             value_string = (value_number_string+' '+REGISTERS[key]['unit']).ljust(20)
